@@ -1,0 +1,22 @@
+{
+  "name": "devpost-curriculum",
+  "owner": {
+    "name": "Devpost"
+  },
+  "metadata": {
+    "description": "Hackathon curriculum plugins from Devpost — spec-driven development from idea to working app."
+  },
+  "plugins": [
+    {
+      "name": "hackathon-in-a-plugin",
+      "source": "./plugins/hackathon-in-a-plugin",
+      "description": "A complete hackathon curriculum delivered as seven slash commands. Walk through spec-driven development from idea spark to working app in 3-4 hours.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Devpost"
+      },
+      "keywords": ["hackathon", "curriculum", "spec-driven", "devpost"],
+      "category": "education"
+    }
+  ]
+}
