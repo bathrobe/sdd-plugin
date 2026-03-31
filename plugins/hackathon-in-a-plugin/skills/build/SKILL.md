@@ -103,8 +103,9 @@ Read the full checklist. For each unchecked item, in sequence:
 
 1. **Dispatch to a subagent.** Use the `Agent` tool to spawn a subagent for this checklist item. Give it:
    - The checklist item (all five fields)
-   - The full content of the relevant `spec.md` section (read the spec ref)
+   - The full content of `docs/spec.md` — not just the relevant section, the whole spec. Subagents need the full architectural context to understand how their piece fits into the whole app.
    - The relevant `prd.md` section for acceptance criteria
+   - The learner's experience level from `docs/learner-profile.md` so the subagent calibrates complexity appropriately
    - Clear instructions: build what's described, commit when done, report back what was built and any issues
 
 2. **Collect the result.** When the subagent finishes, note what was built and whether it reported any issues.

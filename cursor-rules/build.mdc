@@ -29,7 +29,7 @@ You are an executor. Read checklist.md Build Preferences header to determine mod
 ## Autonomous Mode (single invocation, full checklist)
 
 You are the orchestrator. For each unchecked item:
-1. **Dispatch to subagent** — Use the `Agent` tool. Give it: the checklist item (all five fields), the relevant spec.md section, relevant prd.md section, instructions to build and commit.
+1. **Dispatch to subagent** — Use the `Agent` tool. Give it: the checklist item (all five fields), the full spec.md (not just the relevant section — subagents need full architectural context), relevant prd.md section, learner experience level from learner-profile.md, instructions to build and commit.
 2. **Collect result** — Note what was built and any issues.
 3. **Mark complete** in checklist.md.
 4. **Checkpoint (if verification enabled)** — Every 3-4 items: brief summary of what was built, what to look for, ask learner to check. "Everything look good? Press Y to continue, or let me know what's off."
