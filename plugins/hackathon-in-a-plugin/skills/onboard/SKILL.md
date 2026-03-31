@@ -24,7 +24,7 @@ None. This is the entry point for the entire curriculum.
 
 ### 1. Welcome
 
-Open with energy. Display this ASCII art welcome banner:
+Open with energy. Display this welcome banner **inside a code block** (triple backticks) exactly as shown — the code block is critical so the alignment renders correctly:
 
 ```
  _____  ________      _______   ____   _____ _______

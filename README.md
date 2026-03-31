@@ -1,25 +1,27 @@
 # devpost-curriculum
 
+Devpost's plugin marketplace for Claude Code. A collection of agent-powered tools for hackathon participants and organizers.
+
+Currently ships one plugin — more coming soon.
+
+## Plugins
+
+### hackathon-in-a-plugin
+
 A hackathon curriculum that guides you from idea spark to working app in 3–4 hours, delivered as eight agent commands.
 
 **Commands:** `/onboard` → `/scope` → `/prd` → `/spec` → `/checklist` → `/build` → `/iterate` → `/reflect`
 
-## Install
+#### Install
 
 ```
 /plugin marketplace add challengepost/devpost-curriculum
 /plugin install hackathon-in-a-plugin@devpost-curriculum
 ```
 
-Then run `/onboard` to start.
+Then run `/onboard` to start. Requires [Claude Code](https://claude.ai/code).
 
-Requires [Claude Code](https://claude.ai/code).
-
----
-
-## What's Inside
-
-### hackathon-in-a-plugin
+#### About
 
 A complete hackathon curriculum built as a set of agent skills. Each command produces artifacts that downstream commands consume — scope doc, PRD, technical spec, build checklist, and reflection.
 
