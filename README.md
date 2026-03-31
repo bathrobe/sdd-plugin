@@ -15,11 +15,11 @@ A hackathon curriculum that guides you from idea spark to working app in 3–4 h
 #### Install
 
 ```
-/plugin marketplace add challengepost/devpost-curriculum
+/plugin marketplace add https://github.com/challengepost/devpost-curriculum
 /plugin install hackathon-in-a-plugin@devpost-curriculum
 ```
-
-Then run `/onboard` to start. Requires [Claude Code](https://claude.ai/code).
+Then run `/reload-plugins` and restart Claude Code.
+You can then run `/onboard` to start. Requires [Claude Code](https://claude.ai/code).
 
 #### About
 
