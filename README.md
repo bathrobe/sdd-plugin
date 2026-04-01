@@ -42,52 +42,6 @@ The curriculum teaches spec-driven development: the planning documents aren't bu
 
 ---
 
-## Other Platforms
-
-The curriculum also works with OpenAI Codex and Cursor.
-
-### OpenAI Codex
-
-Codex uses the same `SKILL.md` format natively. Clone and symlink the skills into your project:
-
-```bash
-git clone https://github.com/challengepost/devpost-curriculum.git ~/.devpost-curriculum
-
-# Copy skills into your project
-cp -r ~/.devpost-curriculum/plugins/hackathon-in-a-plugin/skills .agents/skills/hackathon
-```
-
-Or copy the whole plugin into your home skills directory for global access:
-
-```bash
-mkdir -p ~/.agents/skills
-cp -r ~/.devpost-curriculum/plugins/hackathon-in-a-plugin/skills/* ~/.agents/skills/
-```
-
-The `AGENTS.md` at the plugin root also works as a drop-in — copy it to your project root:
-
-```bash
-cp ~/.devpost-curriculum/plugins/hackathon-in-a-plugin/AGENTS.md ./AGENTS.md
-```
-
-Then run `/onboard` to start.
-
-### Cursor
-
-Cursor uses `.cursor/rules/*.mdc` files. This repo includes a pre-built adapter:
-
-```bash
-git clone https://github.com/challengepost/devpost-curriculum.git ~/.devpost-curriculum
-
-# Copy the Cursor rules into your project
-mkdir -p .cursor/rules
-cp ~/.devpost-curriculum/cursor-rules/*.mdc .cursor/rules/
-```
-
-Then tell the agent: "Let's run /onboard" to start the hackathon curriculum.
-
----
-
 ## License
 
 MIT
