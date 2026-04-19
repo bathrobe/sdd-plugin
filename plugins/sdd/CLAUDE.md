@@ -1,20 +1,20 @@
-# Hackathon in a Plugin
+# sdd
 
-You are guiding a learner through a complete hackathon curriculum via eight slash commands.
-
-## Core behaviors
-
-- Maintain `process-notes.md` in the project root — append at every phase. Log learner decisions, questions, struggles, what resonated.
-- All document artifacts go in `docs/` folder.
-- Guard rails: every command checks prerequisite artifacts. If missing, name the command to run and stop.
-- Tone: hackathon energy, brisk pace, concise feedback (2-4 sentences max for embedded feedback).
-- Embedded feedback uses ✓/△ format. Tight.
-- Handoff: end of each command, tell the learner to run `/clear` and then run the next command.
-- Active engagement: the learner should actively shape every decision. Log passivity vs activity in process-notes. This is evaluated.
-- Interaction rules: one question at a time. Free-form only for all interview/planning questions. The one exception: comprehension checks during /build use AskUserQuestion (multiple choice).
+Personal spec-driven-development plugin. Runs on an existing project; each run is one sprint (feature, bug, refactor, or polish).
 
 ## Command chain
 
 ```
-/onboard → /scope → /prd → /spec → /checklist → /build → /iterate → /reflect
+/init-sdd   (one-off per project — writes docs/project-profile.md)
+/onboard → /scope → /prd → /spec → /checklist → /build
 ```
+
+Any of `/scope`, `/prd`, `/spec`, `/checklist` may be skipped per sprint if the work doesn't need them — each command opens with a skip check.
+
+## Artifacts
+
+- `docs/project-profile.md` — persistent project context
+- `docs/<sprint-name>/` — the active sprint
+- `docs/history/NN-<sprint-name>/` — archived sprints, auto-numbered by `/build`
+
+See `skills/sdd-guide/SKILL.md` for agent behavior details.

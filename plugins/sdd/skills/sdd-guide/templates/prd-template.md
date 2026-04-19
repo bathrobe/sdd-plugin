@@ -1,49 +1,34 @@
-<!-- This template is a starting point. Add sections if the conversation surfaces
-     things worth capturing. The PRD should be significantly more detailed than
-     the scope doc — that expansion is the whole point of this step. -->
+<!-- Starting shape. The PRD sharpens the scope doc into testable behavior.
+     Add sections freely. -->
 
-# [Project Name] — Product Requirements
+# [Sprint Name] — Product Requirements
 
 ## Problem Statement
-2-3 sentences. Who experiences this problem, how often, and what it costs them.
-Grounded in the scope doc but sharper and more specific.
+2-3 sentences. What's broken / missing / needed, and why it matters now.
 
 ## User Stories
 
-<!-- Group stories into epics (natural groupings of related functionality).
-     Name each epic in plain language that describes the area of the app.
-     Order stories within each epic by importance. -->
+<!-- Group into epics (natural areas of functionality). Order by importance. -->
 
 ### [Epic: area of functionality]
 
-- As a [specific person], I want [capability] so that [benefit].
+- As **[role]**, I want [capability] so that [benefit].
   - [ ] Acceptance criterion
   - [ ] Acceptance criterion
   - [ ] Edge case or error state
-
-- As a [specific person], I want [capability] so that [benefit].
-  - [ ] Acceptance criterion
-  - [ ] Acceptance criterion
 
 ### [Epic: another area]
 
 - ...
 
 ## What We're Building
-Everything the app must do to be complete at the end of 3-4 hours.
-Each item has acceptance criteria — specific, testable behaviors the learner
-can verify with their own eyes. These become the basis for the build checklist.
+The minimum lovable version. Bullet list of what must ship.
 
 ## What We'd Add With More Time
-Features or polish that would make the app better but aren't essential.
-Keep these lighter — a sentence or two each, no full acceptance criteria.
-These are available as starting points if the learner runs /iterate after build.
+Nice-to-haves. A sentence or two each, no acceptance criteria.
 
 ## Non-Goals
-3-5 things this project explicitly will NOT do.
-Each with a brief rationale. Pull from scope.md cuts and any new ones
-surfaced during the PRD conversation.
+Things this sprint explicitly will NOT do, each with a brief rationale.
 
 ## Open Questions
-Unresolved items that might surface during spec or build.
-Flag whether each needs answering before /spec or can wait.
+Unresolved items. Flag whether each needs answering before `/spec` or can wait.

@@ -1,6 +1,6 @@
 {
-  "name": "hackathon-in-a-plugin",
-  "version": "0.2.0",
-  "description": "A complete hackathon curriculum delivered as eight slash commands. Walk through spec-driven development from idea spark to working app in 3-4 hours.",
-  "author": {"name": "Devpost"}
+  "name": "sdd",
+  "version": "0.3.0",
+  "description": "Spec-driven development for personal projects. Seven slash commands to plan and ship a sprint against an existing codebase.",
+  "author": {"name": "joe"}
 }

@@ -1,185 +1,119 @@
 ---
 name: build
-description: "This skill should be used when the user says "/build" or wants to execute checklist items — either one at a time (step-by-step) or all at once (autonomous)."
+description: "This skill should be used when the user says `/build` or asks to run the checklist / execute the sprint."
 ---
 
-# /build — Build Your App
+# /build — Execute the Sprint
 
-Read `skills/hackathon-guide/SKILL.md` for your overall behavior, then follow this command.
+Read `skills/sdd-guide/SKILL.md` for overall behavior, then run this command. `/build` is the last command in the chain. Autonomous orchestrator: dispatch a subagent per checklist item, collect results, tick boxes, archive.
 
-You are an executor. The intelligence is in `checklist.md` — you read it and follow the learner's chosen build mode and preferences. How you behave depends entirely on the mode they chose in `/checklist`.
+## 1. Detect the active sprint
 
-## Prerequisites
+Look inside `docs/`. Ignore `history/` and `project-profile.md`.
 
-`docs/checklist.md` must exist. If it doesn't: "Run `/checklist` first — I need your build plan before we can start building."
+- Zero other folders: "No active sprint. Run `/onboard` to start one." Stop.
+- One folder: that's the active sprint.
+- Multiple folders: ask which one to build. Wait for answer.
 
-## Before You Start
+Let `<sprint>` be the active sprint folder name for the rest of this doc.
 
-- **Read everything in `docs/` first.** Before doing anything else, open the `docs/` folder and read every file in it. This is critical — downstream commands depend on upstream artifacts, and the agent must have full context before starting any work. Do not skip this step.
-- Pay special attention to `docs/checklist.md` — check the Build Preferences header for: build mode (autonomous or step-by-step), verification preference, comprehension checks, git cadence, and check-in cadence.
-- Note experience level from `docs/learner-profile.md`.
-- Read `process-notes.md` for continuity — especially if this isn't the first /build run.
+## 2. Load context
 
-If ALL items are checked, the build is complete. Skip to "When the Checklist Is Complete" below.
+Read, in full:
 
-Now branch based on the build mode in the header.
+- `docs/project-profile.md`
+- Every file in `docs/<sprint>/` (typically some of: `sprint-brief.md`, `scope.md`, `prd.md`, `spec.md`, `checklist.md`)
 
----
+You need all of it in memory before dispatching anything — subagents will get the planning docs forwarded to them.
 
-## Step-by-Step Mode
+## 3. Handle the no-checklist case
 
-Each /build run handles exactly one checklist item. The learner runs `/build` in a fresh chat session for each item.
+If `docs/<sprint>/checklist.md` doesn't exist:
 
-### Before Each Item
+> "No checklist in this sprint. If it's checklist-free (tiny tweak), describe what you want built and I'll do it directly. Otherwise run `/checklist` first."
 
-- Find the first unchecked item in `docs/checklist.md`. That's what this session builds.
-- Read the spec ref for that item (the `spec.md > [Section] > [Subsection]` pointer). Pull in the full context.
-- Read the relevant PRD section for acceptance criteria context.
+If the user describes the work, execute it directly in-process (no subagent needed for a one-shot). Commit tightly. Then jump to step 6 (completion). If they want a checklist, stop.
 
-### The Loop
+## 4. Orchestrate the checklist
 
-#### 1. Announce What You're Building
+For each unchecked item (`- [ ]`) in `checklist.md`, in order:
 
-Tell the learner what's next: the item title, what it does, and why it's in this position in the sequence. Brief — 2-3 sentences. "Step 4: wire up the search endpoint. This connects the search bar we built in step 3 to the database. After this, searching will actually return real results."
+1. **Dispatch a subagent via the `Agent` tool.** Prompt payload:
+   - The full checklist item (all fields: title, what to build, acceptance, verify, spec ref, etc.)
+   - Full content of any `scope.md`, `prd.md`, `spec.md` present in the sprint folder — paste the docs in, don't summarize. Subagents need architectural context.
+   - Full content of `docs/project-profile.md` so the subagent respects project conventions (stack, style, gotchas).
+   - Instructions verbatim:
+     - Build what's described in the checklist item.
+     - Respect project conventions from `project-profile.md`.
+     - Commit the change when done with a tight, present-tense commit message.
+     - Report back: what was built, files touched, anything unexpected or that deviated from the plan.
 
-#### 2. Build It
+2. **Collect the result.** Read the subagent's final message.
 
-Execute the work described in the "What to build" field. Follow the git cadence from the checklist header.
+3. **Tick the box.** Edit `docs/<sprint>/checklist.md` — change that item's `- [ ]` to `- [x]`.
 
-Adapt your communication to the check-in cadence the learner chose:
-- **Learning-driven:** Narrate as you go. Explain what you're doing and why. Pause at interesting decision points.
-- **Balanced:** Brief narration. Explain the non-obvious parts.
-- **Speed-run:** Build quietly. Summarize when done.
+4. **Move on.** Next unchecked item.
 
-#### 3. Verify (if opted in)
+No verification pauses. No comprehension checks. No narration between items beyond a one-line "item N done" if useful. No `/clear` handoffs.
 
-If the learner opted into verification, follow the "Verify" field in the checklist item exactly. Ask the learner to do what it says — run the app, check the output, look at the screen.
+## 5. When something breaks
 
-"Run your dev server and tell me what you see when you click the search button."
+If a subagent fails, or it succeeds but the result is clearly wrong, and one reasonable retry doesn't fix it: **stop.**
 
-Wait for their response. If something's wrong, fix it before moving on. The item isn't done until verification passes.
+1. Tell the user what happened, specifically — what was attempted, what broke, why it's not a quick fix.
+2. If changes since the last clean commit are half-broken, propose reverting to that commit.
+3. Propose a concrete checklist revision: split this item, reorder, drop it, rewrite it. Name the downstream items that are now affected.
+4. Wait for agreement. Update `checklist.md` accordingly.
+5. Resume from the revised list.
 
-If verification is off, skip this step.
+The checklist is a living doc. Plan meets reality; adjust and continue.
 
-#### 4. Comprehension Check (if opted in)
+## 6. On completion (all items checked)
 
-If the learner opted into comprehension checks, ask one precise question about what was just built in this step.
+### a. Summarize
 
-**Rules for the comprehension check:**
-- One question only.
-- **Use the AskUserQuestion tool** to present it as multiple choice (3-4 options). This makes it quick and low-friction — the learner picks an answer and moves on. This is the ONE exception to the "never use multiple-choice" rule. Multiple choice is only for comprehension checks, never for the interview/planning questions.
-- The question must be **precise with a single unambiguous correct answer.** Not vague or conceptual — specific to what just happened. "Which file handles incoming search requests in the code we just wrote?" with concrete options, not "Why is separation of concerns important?"
-- The question should be about something the learner could verify by looking at the code or the app — what a component does, what data flows where, what happens when a specific action is taken.
-- If the learner gets it wrong, give a brief (2-3 sentence) explanation pointing to the specific code or behavior. Not a lecture — just fill the gap. Then move on.
+Post a concise summary: what was built across the sprint, anything notable that came up. A few sentences. No feedback markers, no cheerleading.
 
-If comprehension checks are off, skip this step.
+### b. Harvest persistent preferences
 
-#### 5. Mark Complete and Log
+Look across this sprint — subagent reports, any pushback or corrections from the user, repeated preferences, notable calls. If something would apply to **future** sprints (not just this one), append a bullet to the `## Learned Over Time` section of `docs/project-profile.md`:
 
-- Check the item's box in `docs/checklist.md` (change `- [ ]` to `- [x]`).
-- Commit if the Build Preferences say to (with the commit style they chose).
-- Append to `process-notes.md` under a `### Step N: [title]` subheading within the `## /build` section:
-  - What was built
-  - Learner's verification observation, if applicable (what they reported seeing)
-  - Their comprehension check answer, if applicable — quote it verbatim
-  - Any issues encountered
-  - Whether the learner flagged anything during the build (bugs, concerns, design questions) — this signals active engagement
+```
+- <one-line rule>. Why: <short clause>.
+```
 
-#### 6. Hand Off
+Criteria for appending:
 
-"Step N is done. Run `/clear`, then run `/build` again for the next item."
+- User pushed back firmly on something.
+- User stated the same preference twice.
+- A notable architectural or stylistic call worth preserving.
 
-If the next item is the Devpost submission step, mention it: "Next up is submitting your project to Devpost — pulling together your description, screenshots, and all the docs you've created. Run `/clear`, then run `/build` when you're ready."
+If nothing qualifies, skip silently. Don't append noise.
 
----
+### c. Archive the sprint
 
-## Autonomous Mode
+Find the next archive number:
 
-A single `/build` invocation works through the entire checklist. You are the orchestrator. You dispatch each checklist item to a subagent, collect results, and manage verification checkpoints.
+- Scan `docs/history/` for existing `NN-*` folders.
+- Take max `NN` + 1. Zero-pad to 2 digits (`01`, `02`, ..., `10`, `11`).
+- If `docs/history/` is empty or missing, start at `01`. Create `docs/history/` if needed.
 
-### How It Works
+Target path: `docs/history/NN-<sprint>/`. If that name already exists in history, append `-v2`, `-v3`, etc.
 
-Read the full checklist. For each unchecked item, in sequence:
+Move the folder:
 
-1. **Dispatch to a subagent.** Use the `Agent` tool to spawn a subagent for this checklist item. Give it:
-   - The checklist item (all five fields)
-   - The full content of `docs/spec.md` — not just the relevant section, the whole spec. Subagents need the full architectural context to understand how their piece fits into the whole app.
-   - The relevant `prd.md` section for acceptance criteria
-   - The learner's experience level from `docs/learner-profile.md` so the subagent calibrates complexity appropriately
-   - Clear instructions: build what's described, commit when done, report back what was built and any issues
+```
+git mv docs/<sprint> docs/history/NN-<sprint>
+```
 
-2. **Collect the result.** When the subagent finishes, note what was built and whether it reported any issues.
+If not a git repo, use a plain `mv`. Prefer `git mv` when available so history is preserved.
 
-3. **Mark the item complete** in `docs/checklist.md` (change `- [ ]` to `- [x]`).
+### d. Tell the user
 
-4. **Check if this is a verification checkpoint** (if verification is enabled). Checkpoints happen every 3-4 items. At a checkpoint:
-   - Give the learner a brief summary of what was built since the last checkpoint. Not a per-item replay — just the key things: "Since the last check, I've built the data model, the API endpoints, and the search feature. The app should now show search results when you type a query."
-   - Tell them what to look for: "Run the dev server and try searching for something. You should see results appear below the search bar."
-   - Wait for their response. If something looks wrong, fix it before continuing.
-   - Prompt them to continue: "Everything look good? Press Y to continue, or let me know what's off."
+> "Sprint archived to `docs/history/NN-<sprint>/`."
 
-5. **If verification is off**, just keep building. No pauses between items.
+Done. No further handoff.
 
-### No Process Notes in Autonomous Mode
+## Style
 
-Don't log per-item process notes during autonomous builds. The subagents handle the work; the orchestrator keeps moving. You'll write a summary at the end when the checklist is complete.
-
----
-
-## When Something Breaks (Both Modes)
-
-If an item fails and you can't fix it after a reasonable attempt — something in the spec doesn't work as planned, a dependency is broken, or the approach needs rethinking — **stop immediately.**
-
-### The Protocol
-
-1. **Stop building.** Don't try to skip the item or power through.
-
-2. **Tell the learner what happened.** Be specific: what you tried, what went wrong, and why you think it's not a quick fix.
-
-3. **Assess the damage.** If changes were made since the last clean state (the last verification checkpoint in autonomous mode, or the last completed item in step-by-step mode), propose reverting: "I've made changes since the last clean checkpoint that might be in a broken state. I'd recommend we revert to that checkpoint, rethink the approach, and try again."
-
-4. **Think holistically about the checklist.** The failing item might mean downstream items need to change too. Maybe the item needs to be broken down differently, or the sequence needs to shift, or the spec has a gap. Propose specific checklist edits to the learner: "I think we need to split item 5 into two smaller steps, and item 7 depends on an approach that won't work anymore — here's what I'd change."
-
-5. **Get the learner's agreement** before making any changes to the checklist. Then update `docs/checklist.md` with the revised plan.
-
-6. **Resume building** from the revised checklist.
-
-The checklist is a living document. Plans meet reality and adapt. This is normal and worth naming for the learner: "This is what happens in real development — you make a plan, you hit something unexpected, you adjust the plan. The plan is still valuable because it gave us a structure to adapt from."
-
----
-
-## When the Checklist Is Complete
-
-When all items are checked (including the Devpost submission step):
-
-"Your build is complete — every checklist item is done, including your Devpost submission. Nice work."
-
-Then provide embedded feedback and the handoff.
-
-### Embedded Feedback
-
-Provide 2-4 sentences using checkmark/triangle markers. Evaluate:
-- How smoothly the build went (were there unexpected issues? how were they resolved?)
-- Quality of the learner's engagement (were they verifying actively? catching issues?)
-- Whether the app matches what the PRD described
-- If the checklist was revised mid-build, note how that adaptation went
-
-### Handoff
-
-"If you want to polish or add features, run `/iterate`. When you're ready to wrap up, run `/clear`, then run `/reflect`."
-
-### Process Notes (autonomous mode summary)
-
-If this was an autonomous build, append a `## /build` section to `process-notes.md` now:
-- Total items completed
-- Whether the checklist was revised during the build and why
-- Any checkpoint observations from the learner
-- Overall impressions
-
-### Conversation Style
-
-Everything from the hackathon-guide SKILL.md interaction rules applies here, plus:
-
-- **In step-by-step mode:** Be brief. This is a building session, not a teaching session. Keep narration proportional to the check-in cadence they chose. The checklist is your script — don't improvise new items, reorder things, or skip steps (unless something breaks and you need to adapt). One item per session. Always tell the learner to run `/clear` before the next item.
-- **In autonomous mode:** Be efficient. The learner is watching you work, not co-building. At checkpoints, be concise — tell them what to look for and wait. Between checkpoints, just build.
-- **In both modes:** Verification (when opted in) is how the learner stays connected to the project. Don't skip it even if you're confident. And if something breaks, stop and talk — don't try to be a hero.
+Brisk. Functional. No emojis, no hackathon energy, no teaching moments. You're an orchestrator — dispatch, collect, tick, repeat. Talk only when something needs a decision.

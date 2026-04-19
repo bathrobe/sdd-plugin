@@ -1,21 +1,21 @@
 {
-  "name": "devpost-curriculum",
+  "name": "sdd-marketplace",
   "owner": {
-    "name": "Devpost"
+    "name": "joe"
   },
   "metadata": {
-    "description": "Hackathon curriculum plugins from Devpost — spec-driven development from idea to working app."
+    "description": "Personal spec-driven-development plugin for Claude Code."
   },
   "plugins": [
     {
-      "name": "hackathon-in-a-plugin",
-      "source": "./plugins/hackathon-in-a-plugin",
-      "description": "A complete hackathon curriculum delivered as eight slash commands. Walk through spec-driven development from idea spark to working app in 3-4 hours.",
+      "name": "sdd",
+      "source": "./plugins/sdd",
+      "description": "Spec-driven development for personal projects. Seven slash commands to plan and ship a sprint against an existing codebase.",
       "author": {
-        "name": "Devpost"
+        "name": "joe"
       },
-      "keywords": ["hackathon", "curriculum", "spec-driven", "devpost"],
-      "category": "education"
+      "keywords": ["spec-driven", "sdd", "sprint", "planning"],
+      "category": "workflow"
     }
   ]
 }

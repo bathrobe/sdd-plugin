@@ -1,29 +1,27 @@
-<!-- This template is a starting point. Add more sections if the conversation
-     surfaces things worth capturing that don't fit neatly below. The scope doc
-     should reflect the full richness of the conversation. -->
+<!-- Starting shape. Add sections if the conversation surfaces things worth
+     capturing. This sprint runs against an existing project — frame the work
+     as a change, not a greenfield build. -->
 
-# [Project Name]
+# [Sprint Name] — [One-line tagline]
 
 ## Idea
-One-line description, refined through conversation.
+One-line description of what this sprint adds or changes.
 
-## Who It's For
-Specific user, specific problem, specific unmet need.
+## Context: what exists today
+The relevant slice of the current system this sprint touches. Files, modules,
+conventions, prior art. Assume the reader knows the project but not this corner.
 
-## Inspiration & References
-Links, examples, visual references, mood/aesthetic notes.
-Design energy: fonts, colors, style direction (if applicable).
-Include URLs to everything referenced — these become a research map
-that /spec and other downstream commands can use to gather more context.
+## The change this sprint introduces
+What will be different after this sprint lands. User-facing and/or internal.
 
 ## Goals
-What the learner wants this project to accomplish. What would make them proud.
+What would make this sprint a success.
 
 ## What "Done" Looks Like
-Concrete description of the finished product after 3-4 hours.
+Concrete description of the end state.
 
 ## What's Explicitly Cut
-Named features, use cases, or scope that is OUT. With brief rationale.
+Named things that are OUT of scope, with brief rationale.
 
 ## Loose Implementation Notes
-Early thinking on approach. Non-binding. Gets refined in /spec.
+Early thinking on approach. Non-binding. Refined in `/spec`.
