@@ -1,46 +1,49 @@
-# devpost-curriculum
+# sdd-plugin
 
-Devpost's plugin marketplace for Claude Code. A collection of agent-powered tools for hackathon participants and organizers.
+Personal spec-driven-development plugin for Claude Code. Built for one user (me). Runs repeatedly on an existing project; each run is one sprint — a feature, bug, refactor, or polish pass.
 
-Currently ships one plugin — more coming soon.
+## Plugin: sdd
 
-## Plugins
+A short chain of slash commands that interviews you, produces planning docs, and then builds autonomously.
 
-### hackathon-in-a-plugin
-
-A hackathon curriculum that guides you from idea spark to working app in 3–4 hours, delivered as eight agent commands.
-
-**Commands:** `/onboard` → `/scope` → `/prd` → `/spec` → `/checklist` → `/build` → `/iterate` → `/reflect`
-
-#### Install
+### Command chain
 
 ```
-/plugin marketplace add https://github.com/challengepost/devpost-curriculum
-/plugin install hackathon-in-a-plugin@devpost-curriculum
+/init-sdd   (one-off per project)
+/onboard → /scope → /prd → /spec → /checklist → /build
 ```
-Then run `/reload-plugins` and restart Claude Code.
-You can then run `/onboard` to start. Requires [Claude Code](https://claude.ai/code).
 
-#### About
+- `/init-sdd` writes `docs/project-profile.md` — persistent project context (stack, conventions, gotchas).
+- `/onboard` creates the active sprint folder and proposes a path based on sprint size.
+- `/scope`, `/prd`, `/spec`, `/checklist` each open with a skip check. If the sprint doesn't need that doc, they note the skip and exit.
+- `/build` is autonomous: an orchestrator dispatches a subagent per checklist item. At sprint end it archives the sprint and may append durable preferences to `project-profile.md`.
 
-A complete hackathon curriculum built as a set of agent skills. Each command produces artifacts that downstream commands consume — scope doc, PRD, technical spec, build checklist, and reflection.
+### Sprint lifecycle
 
-The curriculum teaches spec-driven development: the planning documents aren't busywork, they're the submission itself. The agent acts as a hackathon coach — brisk, sharp, encouraging — interviewing you through each phase.
+```
+docs/
+  project-profile.md
+  <active-sprint-name>/        # the one non-history folder = active sprint
+  history/
+    01-<sprint-name>/
+    02-<sprint-name>/
+    ...
+```
 
-**Skills:**
+When `/build` completes a sprint, it moves the active folder into `docs/history/NN-<name>/` with the next available number.
 
-| Command | What it does |
-|---|---|
-| `/onboard` | Welcome, introductions, and learner profile |
-| `/scope` | Brainstorm and refine your idea into a focused project scope |
-| `/prd` | Turn scope into detailed product requirements |
-| `/spec` | Translate PRD into a technical blueprint |
-| `/checklist` | Break the spec into a concrete build checklist |
-| `/build` | Build the app — autonomous (single run) or step-by-step (one item per session) |
-| `/iterate` | Optional polish pass after the build is done |
-| `/reflect` | Wrap up with a quiz, qualitative feedback, and reflection |
+### Install
 
----
+```
+/plugin marketplace add https://github.com/joeholmes/sdd-plugin
+/plugin install sdd@sdd-plugin
+```
+
+Then `/reload-plugins` and restart Claude Code. Run `/init-sdd` the first time you use it on a project, then `/onboard` to start a sprint. Requires [Claude Code](https://claude.ai/code).
+
+### Interview pattern
+
+Every planning command uses a two-phase interview: mandatory questions first, then optional deepening rounds (as many as you want) before the doc is generated. One question at a time, open-ended, no multiple choice.
 
 ## License
 
